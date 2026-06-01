@@ -66,8 +66,13 @@ class SVCModel:
 
 
 class RFModel:
-    def __init__(self):
-        self.model = RandomForestClassifier(n_estimators=100, n_jobs=2)
+    def __init__(self, n_estimators: int = 100, max_samples: float | None = None):
+        self.model = RandomForestClassifier(
+            n_estimators=n_estimators,
+            max_features="sqrt",   # √vocab_size per split — essential for RAM on large datasets
+            max_samples=max_samples,  # subsample rows per tree when set
+            n_jobs=4,
+        )
 
     def fit(self, X: csr_matrix, y: np.ndarray) -> None:
         self.model.fit(X, y)
