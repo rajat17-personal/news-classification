@@ -74,7 +74,14 @@ def run(dataset_name: str, model_keys: list, tune: str):
         featurizer.save(f"{dataset_name}_{model_key}")
 
         y_train = train_df['label'].values
-        model = MODEL_REGISTRY[model_key]()
+
+        # For RF on large datasets (>200k rows): reduce trees and subsample
+        # to stay within RAM. max_features='sqrt' is already set in RFModel.
+        if model_key == 'rf' and len(train_df) > 200_000:
+            model = MODEL_REGISTRY[model_key](n_estimators=50, max_samples=0.5)
+            print(f"  Large dataset detected — RF: n_estimators=50, max_samples=0.5")
+        else:
+            model = MODEL_REGISTRY[model_key]()
 
         tuned_params = {}
         if tune != 'none':

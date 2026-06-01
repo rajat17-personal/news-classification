@@ -1,0 +1,19 @@
+data/raw/
+data/cache/
+data/processed/
+checkpoints/
+results/runs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Notebook outputs (strip before commit)
+.ipynb_checkpoints/
+
+# Env
+.env

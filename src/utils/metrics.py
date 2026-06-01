@@ -35,10 +35,12 @@ def _sanitise(obj):
 
 class MetricsBundle:
     def __init__(self, model_name, dataset_name, split, train_time_sec, inference_ms_per_sample,
-                 hyperparams, accuracy, macro_f1, weighted_f1, per_class_metrics, roc_auc, confusion_matrix):
+                 hyperparams, accuracy, macro_f1, weighted_f1, per_class_metrics, roc_auc,
+                 confusion_matrix, num_classes=2):
         self.model_name = model_name
         self.dataset_name = dataset_name
         self.split = split
+        self.num_classes = num_classes
         self.train_time_sec = train_time_sec
         self.inference_ms_per_sample = inference_ms_per_sample
         self.hyperparams = hyperparams
@@ -54,6 +56,7 @@ class MetricsBundle:
             "model_name": self.model_name,
             "dataset_name": self.dataset_name,
             "split": self.split,
+            "num_classes": self.num_classes,
             "train_time_sec": self.train_time_sec,
             "inference_ms_per_sample": self.inference_ms_per_sample,
             "hyperparams": self.hyperparams,
@@ -92,11 +95,16 @@ def evaluate(predict_fn, test_df, model_name, dataset_name, train_time_sec, hype
     y_pred, y_proba = predict_fn(texts)
 
     accuracy = accuracy_score(y_true, y_pred)
-    macro_f1 = f1_score(y_true, y_pred, average="macro")
-    weighted_f1 = f1_score(y_true, y_pred, average="weighted")
-    per_class = precision_recall_fscore_support(y_true, y_pred, average=None)
-    roc_auc = roc_auc_score(y_true, y_proba[:, 1])
+    macro_f1 = f1_score(y_true, y_pred, average="macro", zero_division=0)
+    weighted_f1 = f1_score(y_true, y_pred, average="weighted", zero_division=0)
+    per_class = precision_recall_fscore_support(y_true, y_pred, average=None, zero_division=0)
     conf_matrix = confusion_matrix(y_true, y_pred)
+
+    n_classes = y_proba.shape[1]
+    if n_classes == 2:
+        roc_auc = roc_auc_score(y_true, y_proba[:, 1])
+    else:
+        roc_auc = roc_auc_score(y_true, y_proba, multi_class="ovr", average="macro")
 
     inference_ms = _measure_latency(predict_fn, texts)
 
@@ -104,6 +112,7 @@ def evaluate(predict_fn, test_df, model_name, dataset_name, train_time_sec, hype
         model_name=model_name,
         dataset_name=dataset_name,
         split=split,
+        num_classes=n_classes,
         train_time_sec=train_time_sec,
         inference_ms_per_sample=inference_ms,
         hyperparams=hyperparams,
