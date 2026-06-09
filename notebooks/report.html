@@ -7802,7 +7802,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Detecting-Misinformation-with-AI">Detecting Misinformation with AI<a class="anchor-link" href="#Detecting-Misinformation-with-AI">¶</a></h1><h3 id="INFO-629-%E2%80%94-Final-Project-Report">INFO 629 — Final Project Report<a class="anchor-link" href="#INFO-629-%E2%80%94-Final-Project-Report">¶</a></h3><p><strong>Name:</strong> Rajat Sharma<br/>
+<h1 id="Detecting-Misinformation-with-AI">Detecting Misinformation with AI<a class="anchor-link" href="#Detecting-Misinformation-with-AI">¶</a></h1><h3 id="INFO-629---Final-Project-Report">INFO 629 - Final Project Report<a class="anchor-link" href="#INFO-629---Final-Project-Report">¶</a></h3><p><strong>Name:</strong> Rajat Sharma<br/>
 <strong>Date:</strong> 9th June 2026</p>
 </div>
 </div>
@@ -7819,7 +7819,6 @@ a.anchor-link {
 <h3 id="Project-Goals">Project Goals<a class="anchor-link" href="#Project-Goals">¶</a></h3><p>This project addresses two research questions:</p>
 <p><strong>Performance:</strong> How accurately do classical machine learning, deep learning, and transformer models classify fake news across multiple benchmark datasets?</p>
 <p><strong>Generalisation:</strong> Do models trained on one dataset or domain generalize to unseen sources, different publication styles, and different text lengths? What is the primary barrier to cross-domain transfer?</p>
-<h3 id="Expected-Impact">Expected Impact<a class="anchor-link" href="#Expected-Impact">¶</a></h3><p>A model that genuinely learns linguistic markers of misinformation — rather than memorizing outlet-specific writing styles, could serve as a scalable pre-screening tool that routes suspicious content to human reviewers. Understanding <em>why</em> existing models fail at cross-domain transfer is equally valuable, it provides concrete guidance on dataset construction and training strategy for the next generation of detection systems.</p>
 </div>
 </div>
 </div>
@@ -7831,7 +7830,7 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="2.-What">2. What<a class="anchor-link" href="#2.-What">¶</a></h2><h3 id="Domain">Domain<a class="anchor-link" href="#Domain">¶</a></h3><p>The task for this model is text classification: given the headline and body of a news article (or a short claim/tweet), predict whether the content is reliable or misleading. The project intentionally spans multiple sub-tasks — binary article classification, six-class political claim veracity, and tweet-level rumour verification, to test generalization.</p>
+<h2 id="2.-What">2. What<a class="anchor-link" href="#2.-What">¶</a></h2><h3 id="Domain">Domain<a class="anchor-link" href="#Domain">¶</a></h3><p>The task for this model is text classification: given the headline and body of a news article (or a short claim/tweet), predict whether the content is reliable or misleading. The project intentionally spans multiple sub-tasks - binary article classification, six-class political claim veracity, and tweet-level rumour verification, to test generalization.</p>
 <h3 id="Datasets">Datasets<a class="anchor-link" href="#Datasets">¶</a></h3><p>Five datasets were used, each serving a distinct purpose.</p>
 <table>
 <thead>
@@ -7894,15 +7893,15 @@ a.anchor-link {
 <p>A stratified subsample of 500,000 articles was drawn across all 457 publishers with usable MBFC labels to avoid running into memory issue with the compute resources available.</p>
 <p><strong>Split (80/10/10 stratified):</strong> 399,938 train / 50,018 val / 50,044 test<br/>
 <strong>Label balance (train):</strong> Reliable = 289,512 (72%) / Questionable = 76,780 (19%) / Conspiracy = 33,646 (8%)<br/>
-<strong>The class imbalance reflects the real-world MBFC publisher landscape</strong> — the majority of publishers are rated as reliable.</p>
+<strong>The class imbalance reflects the real-world MBFC publisher landscape</strong> - the majority of publishers are rated as reliable.</p>
 <h4 id="PHEMEplus">PHEMEplus<a class="anchor-link" href="#PHEMEplus">¶</a></h4><p>1,401 verified rumour threads from five breaking-news Twitter events: Each thread consists of a source tweet and its reply tree; only the source tweet text is used for classification. Labels are derived from post-hoc crowd annotation: <em>true rumour</em> → 1 (Real), <em>false rumour</em> → 0 (Fake). Unverified threads are excluded. PHEMEplus is used exclusively as an <strong>out-of-domain evaluation</strong> target, no model is trained on it.</p>
 <p><strong>Total:</strong> 1,401 threads (fake = 393 / real = 1,008)<br/>
 <strong>Key domain gap:</strong> Tweet-length text (~15–25 words) vs. article-length text (~300–1,000 words).</p>
 <h3 id="Classification-ML-Model-Variants">Classification ML Model Variants<a class="anchor-link" href="#Classification-ML-Model-Variants">¶</a></h3><p>Three tiers of classification technique were evaluated:</p>
 <ol>
-<li><strong>Classical ML</strong> — TF-IDF feature extraction with Logistic Regression, LinearSVC, Random Forest, and XGBoost.</li>
-<li><strong>Deep Learning</strong> — GloVe pre-trained word embeddings with BiLSTM and TextCNN architectures.</li>
-<li><strong>Transformers</strong> — Fine-tuned BERT-base-uncased and RoBERTa-base.</li>
+<li><strong>Classical ML</strong> - TF-IDF feature extraction with Logistic Regression, LinearSVC, Random Forest, and XGBoost.</li>
+<li><strong>Deep Learning</strong> - GloVe pre-trained word embeddings with BiLSTM and TextCNN architectures.</li>
+<li><strong>Transformers</strong> - Fine-tuned BERT-base-uncased and RoBERTa-base.</li>
 </ol>
 <p>In addition, SHAP (SHapley Additive exPlanations) was used for model interpretability on TF-IDF classifiers.</p>
 </div>
@@ -7964,10 +7963,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Preprocessing — representative snippet from src/utils/data_loader.py</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Preprocessing - representative snippet from src/utils/data_loader.py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">nltk</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">stopwords</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nltk.tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_tokenize</span>
@@ -8000,11 +7999,11 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Steps applied to every dataset:</strong></p>
 <ol>
-<li><strong>Text extraction</strong> — headline and article body concatenated into a single text field.</li>
-<li><strong>Cleaning</strong> — HTML tags, URLs stripped; lowercased; tokenised with NLTK; stopwords removed.</li>
-<li><strong>Label encoding</strong> — dataset-specific.</li>
-<li><strong>Stratified splits</strong> — 80% train / 10% validation / 10% test, stratified by label.</li>
-<li><strong>Tier-specific feature extraction</strong> — TF-IDF for classical models; GloVe token IDs for DL; AutoTokenizer for transformers.</li>
+<li><strong>Text extraction</strong> - headline and article body concatenated into a single text field.</li>
+<li><strong>Cleaning</strong> - HTML tags, URLs stripped; lowercased; tokenised with NLTK; stopwords removed.</li>
+<li><strong>Label encoding</strong> - dataset-specific.</li>
+<li><strong>Stratified splits</strong> - 80% train / 10% validation / 10% test, stratified by label.</li>
+<li><strong>Tier-specific feature extraction</strong> - TF-IDF for classical models; GloVe token IDs for DL; AutoTokenizer for transformers.</li>
 </ol>
 <h3 id="Label-Encoding">Label Encoding<a class="anchor-link" href="#Label-Encoding">¶</a></h3><table>
 <thead>
@@ -8023,7 +8022,7 @@ a.anchor-link {
 <tr>
 <td>LIAR</td>
 <td>pants-on-fire, false, barely-true, half-true, mostly-true, true</td>
-<td>0–5 (ordinal)</td>
+<td>0-5 (ordinal)</td>
 </tr>
 <tr>
 <td>NELA-GT</td>
@@ -8038,7 +8037,7 @@ a.anchor-link {
 </tbody>
 </table>
 <p>For <strong>NELA cross-dataset evaluation</strong> against binary targets (ISOT, WELFake, PHEMEplus), a binary collapse is applied: Reliable (0) → Real (1); Questionable (1) + Conspiracy (2) → Fake (0). Probabilities are collapsed as P(Fake) = P(class=1) + P(class=2).</p>
-<h3 id="Classical-Models-%E2%80%94-Feature-Engineering">Classical Models — Feature Engineering<a class="anchor-link" href="#Classical-Models-%E2%80%94-Feature-Engineering">¶</a></h3><p>TF-IDF was chosen because it is interpretable (features are vocabulary tokens), fast at inference, and provides a strong baseline that reveals dataset-specific artefacts.</p>
+<h3 id="Classical-Models---Feature-Engineering">Classical Models - Feature Engineering<a class="anchor-link" href="#Classical-Models---Feature-Engineering">¶</a></h3><p>TF-IDF was chosen because it is interpretable (features are vocabulary tokens), fast at inference, and provides a strong baseline that reveals dataset-specific artefacts.</p>
 </div>
 </div>
 </div>
@@ -8047,10 +8046,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TF-IDF setup — from src/classical/features.py</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TF-IDF setup - from src/classical/features.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
 
 <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span>
@@ -8078,7 +8077,7 @@ a.anchor-link {
 <ul>
 <li><strong>Logistic Regression:</strong> L2 regularisation, max_iter=1000, C=1.0. Chosen as the primary interpretable baseline LR models are fast, and compatible with LinearExplainer for SHAP.</li>
 <li><strong>LinearSVC:</strong> Hinge loss, C=0.1. Faster than kernel SVC at scale.</li>
-<li><strong>Random Forest:</strong> n_estimators=100, max_features='sqrt', n_jobs=4. The max_features='sqrt' setting is critical — without it, each split evaluates all 50,000 TF-IDF features, causing OOM on large datasets. For NELA (400k rows), further reduced to n_estimators=50, max_samples=0.5 to fit in RAM.</li>
+<li><strong>Random Forest:</strong> n_estimators=100, max_features='sqrt', n_jobs=4. The max_features='sqrt' setting is critical - without it, each split evaluates all 50,000 TF-IDF features, causing OOM on large datasets. For NELA (400k rows), further reduced to n_estimators=50, max_samples=0.5 to fit in RAM.</li>
 <li><strong>XGBoost:</strong> n_estimators=200, max_depth=6, learning_rate=0.1, tree method hist for sparse input efficiency.</li>
 </ul>
 <h3 id="Deep-Learning-Models">Deep Learning Models<a class="anchor-link" href="#Deep-Learning-Models">¶</a></h3><p>GloVe 840B-token, 300-dimensional pre-trained embeddings were used. The vocabulary was built from the training corpus (top 30,000 tokens by frequency) with a coverage of 95.1% on the NELA-sampled set.</p>
@@ -8090,10 +8089,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># BiLSTM architecture — from src/deep_learning/models.py</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># BiLSTM architecture - from src/deep_learning/models.py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BiLSTM</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -8124,10 +8123,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TextCNN architecture — from src/deep_learning/models.py</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TextCNN architecture - from src/deep_learning/models.py</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextCNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_matrix</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">num_filters</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">filter_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -8175,10 +8174,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Transformer classifier — from src/transformers_/models.py</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Transformer classifier - from src/transformers_/models.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoModel</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
 
@@ -8219,7 +8218,7 @@ a.anchor-link {
 <ol>
 <li><strong>Within-dataset:</strong> Train and test on the same dataset's splits. Standard held-out test set.</li>
 <li><strong>Cross-dataset probe:</strong> Train on dataset A, evaluate on dataset B's test set without any fine-tuning on B. Measures genuine domain transfer.</li>
-<li><strong>Out-of-domain (OOD):</strong> Evaluate on PHEMEplus — a completely different modality (tweets), never seen during training.</li>
+<li><strong>Out-of-domain (OOD):</strong> Evaluate on PHEMEplus - a completely different modality (tweets), never seen during training.</li>
 </ol>
 <p><strong>Primary metrics:</strong> Macro-F1 (equal weight per class; robust to imbalance), ROC-AUC.<br/>
 <strong>Secondary metrics:</strong> Accuracy, per-class precision/recall/F1, inference latency (ms/sample, CPU, single-sample batch).</p>
@@ -8327,8 +8326,8 @@ a.anchor-link {
 </tr>
 </tbody>
 </table>
-<p><strong>Key observation:</strong> Every finetuned model exceeds 99.4% Macro-F1 on ISOT. The spread between the best classical model (XGBoost, 0.9974) and the best transformer (RoBERTa, 0.9997) is only <strong>0.0023</strong> — statistically negligible and practically irrelevant. Performance saturation at this level suggests the task is near-trivially solvable given the dataset structure. The <em>reason</em> is examined in Section 5.5 (SHAP analysis).</p>
-<p>BERT (frozen) at 0.8425 is the only notable underperformer — frozen BERT with a randomly-initialised classification head struggles until the head adapts, but without encoder fine-tuning the representations are not task-specific.</p>
+<p><strong>Key observation:</strong> Every finetuned model exceeds 99.4% Macro-F1 on ISOT. The spread between the best classical model (XGBoost, 0.9974) and the best transformer (RoBERTa, 0.9997) is only <strong>0.0023</strong> - statistically negligible and practically irrelevant. Performance saturation at this level suggests the task is near-trivially solvable given the dataset structure. The <em>reason</em> is examined in Section 5.5 (SHAP analysis).</p>
+<p>BERT (frozen) at 0.8425 is the only notable underperformer - frozen BERT with a randomly-initialised classification head struggles until the head adapts, but without encoder fine-tuning the representations are not task-specific.</p>
 </div>
 </div>
 </div>
@@ -8493,7 +8492,7 @@ Transformers not evaluated on NELA due to compute constraints.</p>
 <p><strong>Key observations:</strong></p>
 <ul>
 <li>NELA is the only dataset where tier differences are meaningful. BiLSTM (0.7458) outperforms LR (0.7179) by a margin that matters in practice.</li>
-<li>RF collapses to 0.5086 — barely above random chance (0.33) for 3 classes. At 400,000 training rows and 50,000 TF-IDF features, ensemble trees cannot efficiently partition the high-dimensional sparse space even with max_features='sqrt'.</li>
+<li>RF collapses to 0.5086 - barely above random chance (0.33) for 3 classes. At 400,000 training rows and 50,000 TF-IDF features, ensemble trees cannot efficiently partition the high-dimensional sparse space even with max_features='sqrt'.</li>
 <li>The 3-class ROC-AUC spread (0.854–0.930) is the most honest measure of model quality across the entire study.</li>
 <li>BiLSTM's best PHEMEplus cross-eval score (0.5068) confirms that sequence-level representations learned on 500k articles partially transfer to tweet-length text and potentialy should improve further when trained on complete list of articles in NELA-GT.</li>
 </ul>
@@ -8550,28 +8549,28 @@ Transformers not evaluated on NELA due to compute constraints.</p>
 <td>BiLSTM</td>
 <td>Deep Learning</td>
 <td>0.2449</td>
-<td>—</td>
+<td>-</td>
 <td>0.167</td>
 </tr>
 <tr>
 <td>TextCNN</td>
 <td>Deep Learning</td>
 <td>0.2417</td>
-<td>—</td>
+<td>-</td>
 <td>0.167</td>
 </tr>
 <tr>
 <td>BERT</td>
 <td>Transformer</td>
 <td>0.2722</td>
-<td>—</td>
+<td>-</td>
 <td>0.167</td>
 </tr>
 <tr>
 <td>RoBERTa</td>
 <td>Transformer</td>
 <td>0.2740</td>
-<td>—</td>
+<td>-</td>
 <td>0.167</td>
 </tr>
 </tbody>
@@ -8660,8 +8659,8 @@ Transformers not evaluated on NELA due to compute constraints.</p>
 <td>0.3064</td>
 <td>0.0000</td>
 <td>0.3850</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>TextCNN (finetuned)</td>
@@ -8678,57 +8677,57 @@ Transformers not evaluated on NELA due to compute constraints.</p>
 <td>0.3163</td>
 <td>0.0005</td>
 <td>0.3853</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>BERT (finetuned)</td>
 <td>Transformer</td>
 <td>0.2358</td>
-<td>—</td>
+<td>-</td>
 <td>0.3884</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>BERT (frozen)</td>
 <td>Transformer</td>
 <td>0.3076</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>RoBERTa (finetuned)</td>
 <td>Transformer</td>
 <td>0.1944</td>
-<td>—</td>
+<td>-</td>
 <td>0.3848</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>RoBERTa (frozen)</td>
 <td>Transformer</td>
 <td>0.3072</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Finding 1 — ISOT→WELFake collapse (0.19–0.31):</strong><br/>
+<p><strong>Finding 1 - ISOT→WELFake collapse (0.19–0.31):</strong><br/>
 Every model trained on ISOT scores near-random on WELFake. This shows that models have learned to identify Reuters writing style as the signal for "real," not linguistic characteristics of real atricles.</p>
-<p><strong>Finding 2 — WELFake→ISOT complete failure (0.000–0.004):</strong><br/>
+<p><strong>Finding 2 - WELFake→ISOT complete failure (0.000–0.004):</strong><br/>
 Models trained on WELFake predict a single class for all ISOT articles. The labels are incompatible: WELFake's "real" class contains multiple source styles, but ISOT's "real" is exclusively Reuters. The WELFake-trained model finds no basis for distinguishing ISOT's two classes.</p>
-<p><strong>Finding 3 — Combined→WELFake at ~0.385:</strong>
+<p><strong>Finding 3 - Combined→WELFake at ~0.385:</strong>
 Even training on a merged ISOT+WELFake corpus does better, but is still not better than random.</p>
-<p><strong>Finding 4 — NELA→ISOT lift (0.37–0.57):</strong><br/>
+<p><strong>Finding 4 - NELA→ISOT lift (0.37–0.57):</strong><br/>
 Models trained on NELA-GT (457 sources) score 0.50–0.57 on ISOT cross-eval. LR improves from 0.26 (ISOT-trained, cross-eval) to <strong>0.57</strong> (NELA-trained). Source diversity is the mechanism: when the training data includes hundreds of reliable and unreliable publishers, the model cannot rely on a single outlet's fingerprint. This should potentially improve further with training on the complete articles list from the NELA-GT dataset.</p>
-<p><strong>Finding 5 — NELA→PHEMEplus (0.42–0.51):</strong><br/>
-NELA-trained models score 0.50–0.51 on PHEMEplus tweets — nearly double the 0.27 scored by ISOT-trained models, despite no tweet exposure during training. This is the best cross-domain result in the study and confirms that source diversity improves generalization even across modality boundaries.</p>
+<p><strong>Finding 5 - NELA→PHEMEplus (0.42–0.51):</strong><br/>
+NELA-trained models score 0.50–0.51 on PHEMEplus tweets - nearly double the 0.27 scored by ISOT-trained models, despite no tweet exposure during training. This is the best cross-domain result in the study and confirms that source diversity improves generalization even across modality boundaries.</p>
 </div>
 </div>
 </div>
@@ -9003,9 +9002,9 @@ NELA-trained models score 0.50–0.51 on PHEMEplus tweets — nearly double the 
 <p><strong>Latency:</strong></p>
 <ul>
 <li><strong>LR (0.44ms)</strong> is the fastest model. Suitable for any real-time use case.</li>
-<li><strong>TextCNN (0.76ms)</strong> offers nearly identical accuracy to BiLSTM on ISOT/WELFake with 30× faster inference — the best overall efficiency trade-off.</li>
+<li><strong>TextCNN (0.76ms)</strong> offers nearly identical accuracy to BiLSTM on ISOT/WELFake with 30× faster inference - the best overall efficiency trade-off.</li>
 <li><strong>BERT/RoBERTa (~7.5ms)</strong> are much slower than TextCNN with marginal accuracy gains on binary datasets where all models are already above 0.99.</li>
-<li><strong>RF (45ms)</strong> is the slowest by far — ensemble tree inference does not benefit from the sparse TF-IDF representation as efficiently as linear models.</li>
+<li><strong>RF (45ms)</strong> is the slowest by far - ensemble tree inference does not benefit from the sparse TF-IDF representation as efficiently as linear models.</li>
 </ul>
 </div>
 </div>
@@ -9034,6 +9033,7 @@ NELA-trained models score 0.50–0.51 on PHEMEplus tweets — nearly double the 
     |-- pheme/          # PHEMEplus loader
     |-- utils/          # Config, metrics, data loader, results aggregator     
 </code></pre>
+<p>Note: Checkpoints are only available in zip uploaded in Canvas submission and not in the git repo</p>
 </div>
 </div>
 </div>
