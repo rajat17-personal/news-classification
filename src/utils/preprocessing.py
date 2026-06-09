@@ -8,9 +8,7 @@ except LookupError:
     nltk.download('punkt', quiet=True)
 
 # Source bylines / outlet fingerprints that leak label identity in ISOT.
-# "reuters" appears in every real article dateline; "century wire", "21st century wire"
-# etc. are specific fake-news sites. Stripping these tests whether models learn
-# content-level signals rather than outlet identity.
+# Stripping these tests whether models learn content-level signals rather than outlet identity.
 _SOURCE_TOKENS = re.compile(
     r'\b(reuters|century wire|21st century wire|centurywire|'
     r'washington reuters|london reuters|new york reuters|'

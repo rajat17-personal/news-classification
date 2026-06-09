@@ -31,10 +31,8 @@ HF_MODEL_NAMES = {
     "roberta": "roberta-base",
 }
 
-
 def _variant_name(arch: str, freeze_mode: str) -> str:
     return f"{arch}_{freeze_mode}"
-
 
 def run(
     dataset_name: str,

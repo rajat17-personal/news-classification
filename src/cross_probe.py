@@ -1,29 +1,3 @@
-"""
-P6.3 / P6.4 — Cross-dataset probe runner.
-
-Direction A (--direction a_to_b): Train on ISOT → evaluate on WELFake test (deduplicated)
-Direction B (--direction b_to_a): Train on WELFake → evaluate on ISOT test
-
-Uses saved best checkpoints — no retraining for direction A.
-Direction B for classical/DL requires the WELFake-trained checkpoint to already exist
-(i.e. you have run train.py --dataset welfake for that tier/model).
-
-Usage:
-  # First run dedup once:
-  python -m src.utils.dedup
-
-  # Classical probes (all models, both directions):
-  python -m src.cross_probe --tier classical --direction a_to_b
-  python -m src.cross_probe --tier classical --direction b_to_a
-
-  # Deep learning probes:
-  python -m src.cross_probe --tier deep_learning --direction a_to_b
-  python -m src.cross_probe --tier deep_learning --direction b_to_a
-
-  # Transformer probes:
-  python -m src.cross_probe --tier transformer --direction a_to_b
-  python -m src.cross_probe --tier transformer --direction b_to_a
-"""
 import argparse
 import os
 
@@ -38,37 +12,23 @@ from .utils.config import (
 from .utils.data_loader import load_splits
 from .utils.metrics import evaluate
 
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def _load_probe_df(source_dataset: str, target_dataset: str) -> pd.DataFrame:
     """Load target test split. For ISOT→WELFake use the deduplicated version."""
     processed_dir = os.path.join(PROCESSED_DATA_PATH, target_dataset)
     if source_dataset == "isot" and target_dataset == "welfake":
         deduped = os.path.join(processed_dir, "test_deduped.csv")
         if not os.path.exists(deduped):
-            raise FileNotFoundError(
-                f"{deduped} not found — run: python -m src.utils.dedup"
-            )
+            raise FileNotFoundError()
         df = pd.read_csv(deduped)
         print(f"  Using deduplicated WELFake test: {len(df)} rows")
     else:
         df = pd.read_csv(os.path.join(processed_dir, "test.csv"))
         print(f"  Using {target_dataset} test: {len(df)} rows")
-    # coerce text to str
     df["text"] = df["text"].fillna("").astype(str)
     return df
 
-
 def _model_name_for_probe(arch: str, train_dataset: str, eval_dataset: str) -> str:
     return f"{arch}_{train_dataset}_to_{eval_dataset}_probe"
-
-
-# ---------------------------------------------------------------------------
-# Classical
-# ---------------------------------------------------------------------------
 
 def _run_classical_probe(train_dataset: str, eval_dataset: str, models: list[str]):
     from .classical.features import TFIDFFeaturizer
@@ -108,11 +68,6 @@ def _run_classical_probe(train_dataset: str, eval_dataset: str, models: list[str
             split="cross_probe",
         )
         print(f"    macro_f1={bundle.macro_f1:.4f}  acc={bundle.accuracy:.4f}  auc={bundle.roc_auc:.4f}")
-
-
-# ---------------------------------------------------------------------------
-# Deep Learning
-# ---------------------------------------------------------------------------
 
 def _run_dl_probe(train_dataset: str, eval_dataset: str, archs: list[str]):
     from .deep_learning.dataset import TextDataset, VocabBuilder
@@ -172,11 +127,6 @@ def _run_dl_probe(train_dataset: str, eval_dataset: str, archs: list[str]):
         )
         print(f"    macro_f1={bundle.macro_f1:.4f}  acc={bundle.accuracy:.4f}  auc={bundle.roc_auc:.4f}")
 
-
-# ---------------------------------------------------------------------------
-# Transformer
-# ---------------------------------------------------------------------------
-
 def _run_transformer_probe(train_dataset: str, eval_dataset: str, archs: list[str]):
     from .transformers_.models import TransformerClassifier
     from .transformers_.dataset import TransformerDataset
@@ -235,15 +185,9 @@ def _run_transformer_probe(train_dataset: str, eval_dataset: str, archs: list[st
         )
         print(f"    macro_f1={bundle.macro_f1:.4f}  acc={bundle.accuracy:.4f}  auc={bundle.roc_auc:.4f}")
 
-
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
-
 _DL_VARIANTS = ["bilstm_frozen", "bilstm_finetuned", "textcnn_frozen", "textcnn_finetuned"]
 _TRANSFORMER_VARIANTS = ["bert_frozen", "bert_finetuned", "roberta_frozen", "roberta_finetuned"]
 _CLASSICAL_MODELS = ["lr", "svc", "rf", "xgb"]
-
 
 def main():
     parser = argparse.ArgumentParser(description="Cross-dataset probe runner")
@@ -279,7 +223,6 @@ def main():
     elif args.tier == "transformer":
         variants = _TRANSFORMER_VARIANTS if "all" in args.model else args.model
         _run_transformer_probe(train_ds, eval_ds, variants)
-
 
 if __name__ == "__main__":
     main()

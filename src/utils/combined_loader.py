@@ -1,11 +1,3 @@
-"""
-Combined ISOT + WELFake dataset loader.
-
-Merges the processed train/val/test CSVs from both datasets, then re-stratifies
-into new 80/10/10 splits so the combined set is balanced and reproducible.
-
-Output: data/processed/combined/{train,val,test}.csv
-"""
 import os
 
 import pandas as pd
@@ -20,12 +12,7 @@ COMBINED_CONFIG = DatasetConfig(
     binary=True,
 )
 
-
 def load_combined_splits(force: bool = False):
-    """
-    Returns (train_df, val_df, test_df) for the merged ISOT+WELFake dataset.
-    Builds and caches to disk on first call; subsequent calls load from cache.
-    """
     out_dir = os.path.join(PROCESSED_DATA_PATH, "combined")
     train_path = os.path.join(out_dir, "train.csv")
     val_path   = os.path.join(out_dir, "val.csv")

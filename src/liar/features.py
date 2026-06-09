@@ -1,15 +1,3 @@
-"""
-LIAR metadata feature builder.
-
-Combines TF-IDF text features with structured metadata:
-  - 5 speaker credit-history counts (numeric, log-scaled)
-  - Party affiliation one-hot (top 8 + "other")
-  - Subject multi-hot (top 20 subjects)
-  - Context type grouped one-hot (tv_ad | speech | interview | press_release | tweet | other)
-
-Speaker (2910 unique) and job_title (1183 unique) are too high-cardinality for one-hot;
-they are captured indirectly via the credit-history counts.
-"""
 import os
 import numpy as np
 import pandas as pd
@@ -37,13 +25,13 @@ _TOP_SUBJECTS = [
 
 _CONTEXT_MAP = {
     "tv":       ["a tv ad", "a television ad", "a campaign ad", "a tv interview",
-                 "television", "tv", "fox news", "cnn", "msnbc", "nbc", "cbs", "abc"],
+                "television", "tv", "fox news", "cnn", "msnbc", "nbc", "cbs", "abc"],
     "speech":   ["a speech", "a floor speech", "a debate", "a rally", "a campaign speech",
-                 "a commencement speech", "a town hall meeting"],
+                "a commencement speech", "a town hall meeting"],
     "interview":["an interview", "an interview on", "a radio interview", "a press conference",
-                 "a news conference"],
+                "a news conference"],
     "release":  ["a news release", "a press release", "a statement", "a blog post",
-                 "a blog posting", "a website", "an op-ed", "a column"],
+                "a blog posting", "a website", "an op-ed", "a column"],
     "tweet":    ["a tweet", "twitter", "facebook", "social media", "a facebook post"],
 }
 
@@ -65,10 +53,6 @@ def _parse_subjects(subject_str) -> list:
 
 
 class LIARMetaFeaturizer:
-    """
-    Builds a combined feature matrix:
-      [TF-IDF text | credit history | party one-hot | subject multi-hot | context one-hot]
-    """
 
     def __init__(self, text_max_features: int = 30000):
         from ..classical.features import TFIDFFeaturizer
@@ -76,10 +60,6 @@ class LIARMetaFeaturizer:
         self.mlb = MultiLabelBinarizer(classes=_TOP_SUBJECTS)
         self.mlb.fit([[s] for s in _TOP_SUBJECTS])
         self._fitted = False
-
-    # ------------------------------------------------------------------
-    # Raw TSV loading — loads full columns, not the preprocessed CSV
-    # ------------------------------------------------------------------
 
     @staticmethod
     def load_raw_tsv(split: str) -> pd.DataFrame:
@@ -90,15 +70,11 @@ class LIARMetaFeaturizer:
             os.path.join(raw_dir, fname),
             sep="\t", header=None,
             names=["id", "label", "statement", "subject", "speaker", "job_title",
-                   "state_info", "party_affiliation",
-                   "barely_true_counts", "false_counts", "half_true_counts",
-                   "mostly_true_counts", "pants_on_fire_counts", "context"],
+                "state_info", "party_affiliation",
+                "barely_true_counts", "false_counts", "half_true_counts",
+                "mostly_true_counts", "pants_on_fire_counts", "context"],
         )
         return df
-
-    # ------------------------------------------------------------------
-    # Metadata feature builders
-    # ------------------------------------------------------------------
 
     def _credit_features(self, df: pd.DataFrame) -> np.ndarray:
         """5 numeric credit-history columns, log1p scaled."""
@@ -135,10 +111,6 @@ class LIARMetaFeaturizer:
             self._context_features(df),
         ])
 
-    # ------------------------------------------------------------------
-    # Fit / transform
-    # ------------------------------------------------------------------
-
     def fit_transform(self, df: pd.DataFrame, texts: list) -> csr_matrix:
         X_text = self.tfidf.fit_transform(texts)
         X_meta = csr_matrix(self._meta_features(df))
@@ -166,5 +138,5 @@ class LIARMetaFeaturizer:
         party_names  = [f"party_{p}" for p in _TOP_PARTIES] + ["party_other"]
         subject_names = [f"subject_{s}" for s in _TOP_SUBJECTS]
         context_names = ["ctx_tv", "ctx_speech", "ctx_interview",
-                         "ctx_release", "ctx_tweet", "ctx_other"]
+                        "ctx_release", "ctx_tweet", "ctx_other"]
         return text_names + credit_names + party_names + subject_names + context_names

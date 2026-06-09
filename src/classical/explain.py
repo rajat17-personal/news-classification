@@ -1,17 +1,8 @@
 """
 SHAP explainability for TF-IDF classical models.
 
-Generates:
-  - Top-N SHAP feature importance bar charts (global, per dataset)
-  - Per-class SHAP summary plots (for multi-class / LIAR)
-  - Waterfall plot for a single example (local explanation)
-  - Saves all figures to results/shap/<dataset>_<model>/
-
 Usage:
   python -m src.classical.explain --dataset isot --model lr
-  python -m src.classical.explain --dataset welfake --model xgb
-  python -m src.classical.explain --dataset all --model all
-  python -m src.classical.explain --dataset isot --model lr --n-top 30 --sample 500
 """
 import argparse
 import os
@@ -50,15 +41,12 @@ def _load_model(dataset: str, model_key: str):
     """Load best checkpoint for a classical model."""
     path = os.path.join(CHECKPOINTS_PATH, "classical", dataset, f"{model_key}_best.joblib")
     if not os.path.exists(path):
-        # fallback to non-best
         path = os.path.join(CHECKPOINTS_PATH, "classical", dataset, f"{model_key}.joblib")
     if not os.path.exists(path):
         raise FileNotFoundError(f"No checkpoint found for {model_key} on {dataset} at {path}")
     return joblib.load(path)
 
-
 def _load_featurizer(dataset: str, model_key: str) -> TFIDFFeaturizer:
-    # try best-labelled vectoriser first, then fallback
     for tag in (f"best_{model_key}_{dataset}", f"{dataset}_{model_key}"):
         path = os.path.join(CACHE_PATH, f"tfidf_{tag}.joblib")
         if os.path.exists(path):
@@ -73,7 +61,6 @@ def _get_base_model(model, model_key: str):
     from sklearn.calibration import CalibratedClassifierCV
     from sklearn.svm import LinearSVC
     if model_key == "svc":
-        # shap.LinearExplainer works with the calibrated wrapper directly
         return model
     return model
 
@@ -98,23 +85,18 @@ def run_shap(dataset: str, model_key: str, n_top: int, n_sample: int):
 
     if model_key == "lr":
         _shap_linear(model, X_sample, feature_names, sample_df, dataset, model_key,
-                     n_top, out_dir, label_names)
+                    n_top, out_dir, label_names)
     elif model_key == "xgb":
         _shap_tree(model, X_sample, feature_names, sample_df, dataset, model_key,
-                   n_top, out_dir, label_names)
+                n_top, out_dir, label_names)
     elif model_key in ("svc", "rf"):
         _shap_kernel(model, X_sample, feature_names, sample_df, dataset, model_key,
-                     n_top, out_dir, label_names, n_bg=100)
+                    n_top, out_dir, label_names, n_bg=100)
     else:
         print(f"  Unsupported model key: {model_key}")
 
-
-# ---------------------------------------------------------------------------
-# LR — LinearExplainer (exact, fast on sparse TF-IDF)
-# ---------------------------------------------------------------------------
-
 def _shap_linear(model, X_sample, feature_names, sample_df, dataset, model_key,
-                 n_top, out_dir, label_names):
+                n_top, out_dir, label_names):
     explainer = shap.LinearExplainer(model, X_sample, feature_perturbation="interventional")
     shap_values = explainer(X_sample)
     shap_values.feature_names = list(feature_names)
@@ -141,11 +123,7 @@ def _shap_linear(model, X_sample, feature_names, sample_df, dataset, model_key,
 
     print(f"  SHAP plots saved → {out_dir}")
 
-
-# ---------------------------------------------------------------------------
-# XGBoost — TreeExplainer (exact, fast on dense)
-# ---------------------------------------------------------------------------
-
+# XGboost
 def _shap_tree(model, X_sample, feature_names, sample_df, dataset, model_key,
                n_top, out_dir, label_names):
     X_dense = X_sample.toarray().astype(np.float32)
@@ -179,11 +157,7 @@ def _shap_tree(model, X_sample, feature_names, sample_df, dataset, model_key,
 
     print(f"  SHAP plots saved → {out_dir}")
 
-
-# ---------------------------------------------------------------------------
-# RF / SVC — KernelExplainer (approximate, slower)
-# ---------------------------------------------------------------------------
-
+#RF/SVC
 def _shap_kernel(model, X_sample, feature_names, sample_df, dataset, model_key,
                  n_top, out_dir, label_names, n_bg=100):
     print(f"  Using KernelExplainer (approximate) — n_bg={n_bg}, n_sample={X_sample.shape[0]}")
@@ -209,11 +183,6 @@ def _shap_kernel(model, X_sample, feature_names, sample_df, dataset, model_key,
                                 label=label_names[-1])
 
     print(f"  SHAP plots saved → {out_dir}")
-
-
-# ---------------------------------------------------------------------------
-# Shared plot helpers
-# ---------------------------------------------------------------------------
 
 def _plot_global_importance(vals, feature_names, dataset, model_key, n_top, out_dir,
                             label="", cls_idx=None):
@@ -273,11 +242,6 @@ def _plot_waterfall_example(shap_explanation, sample_df, feature_names, out_dir,
             plt.close()
     except Exception as e:
         print(f"  Waterfall plot skipped: {e}")
-
-
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(description="SHAP explainability for classical TF-IDF models")

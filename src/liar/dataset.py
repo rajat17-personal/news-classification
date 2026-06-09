@@ -1,17 +1,3 @@
-"""
-P9.1 — LIAR dataset loader and preprocessor.
-
-LIAR TSV columns (no header):
-  0: id, 1: label, 2: statement, 3: subject, 4: speaker,
-  5: job_title, 6: state_info, 7: party_affiliation,
-  8: barely_true_counts, 9: false_counts, 10: half_true_counts,
-  11: mostly_true_counts, 12: pants_on_fire_counts, 13: context
-
-6-class label set (kept as-is for multi-class):
-  pants-fire=0, false=1, barely-true=2, half-true=3, mostly-true=4, true=5
-
-Only the statement (col 2) is used as text — no full article body.
-"""
 import os
 
 import pandas as pd
@@ -50,10 +36,6 @@ def _load_tsv(path: str) -> pd.DataFrame:
 
 
 def load_liar_splits(force: bool = False):
-    """
-    Returns (train_df, val_df, test_df) using the official LIAR splits.
-    Preprocesses and caches on first call.
-    """
     out_dir = os.path.join(PROCESSED_DATA_PATH, "liar")
     paths = {s: os.path.join(out_dir, f"{s}.csv") for s in ("train", "val", "test")}
 

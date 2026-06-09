@@ -1,16 +1,3 @@
-"""
-P9.1 — LIAR 6-class classification.
-
-Trains the best model from each tier on LIAR's 6-class statement classification.
-Uses official train/val/test splits from the LIAR benchmark.
-
-Usage:
-  python -m src.liar.train --tier classical --model lr
-  python -m src.liar.train --tier classical --model all
-  python -m src.liar.train --tier deep_learning --model bilstm --freeze finetuned
-  python -m src.liar.train --tier transformer --model bert --freeze finetuned
-  python -m src.liar.train --tier transformer --model all --freeze both
-"""
 import argparse
 import os
 from pathlib import Path
@@ -83,16 +70,11 @@ def _evaluate_liar(predict_fn, test_df, model_name: str, train_time_sec: float, 
         json.dump(_sanitise(result), f, indent=2)
 
     print(f"  acc={accuracy:.4f}  macro_f1={macro_f1:.4f}"
-          + (f"  auc={roc_auc:.4f}" if roc_auc else ""))
+        + (f"  auc={roc_auc:.4f}" if roc_auc else ""))
     print(f"  Per-class F1: " +
-          "  ".join(f"{LIAR_LABEL_NAMES[i]}={per_class[2][i]:.3f}"
+        "  ".join(f"{LIAR_LABEL_NAMES[i]}={per_class[2][i]:.3f}"
                     for i in range(NUM_CLASSES) if i < len(per_class[2])))
     return result
-
-
-# ---------------------------------------------------------------------------
-# Classical
-# ---------------------------------------------------------------------------
 
 def run_classical(models: list[str]):
     import time
@@ -128,12 +110,7 @@ def run_classical(models: list[str]):
             return _m.predict(X), _m.predict_proba(X)
 
         _evaluate_liar(predict_fn, test_df, f"{model_key}_liar", train_time,
-                       {"model": model_key, "max_features": 30000, "ngram_range": "(1,2)"})
-
-
-# ---------------------------------------------------------------------------
-# Deep Learning
-# ---------------------------------------------------------------------------
+                    {"model": model_key, "max_features": 30000, "ngram_range": "(1,2)"})
 
 def run_deep_learning(archs: list[str], freeze_modes: list[str], epochs: int, batch_size: int):
     import time
@@ -161,8 +138,8 @@ def run_deep_learning(archs: list[str], freeze_modes: list[str], epochs: int, ba
             )
             embedding = glove.build_matrix(vocab, freeze=freeze)
             model = (BiLSTM(embedding, num_classes=NUM_CLASSES)
-                     if arch == "bilstm"
-                     else TextCNN(embedding, num_classes=NUM_CLASSES))
+                    if arch == "bilstm"
+                    else TextCNN(embedding, num_classes=NUM_CLASSES))
 
             cfg = TrainerConfig(epochs=epochs, batch_size=batch_size)
             trainer = Trainer(model, cfg, name, "liar")
@@ -187,12 +164,7 @@ def run_deep_learning(archs: list[str], freeze_modes: list[str], epochs: int, ba
                 return np.array(all_preds), np.vstack(all_probas)
 
             _evaluate_liar(predict_fn, test_df, name, history.train_time_sec,
-                           {"arch": arch, "freeze_mode": freeze_mode, "epochs": history.best_epoch})
-
-
-# ---------------------------------------------------------------------------
-# Transformer
-# ---------------------------------------------------------------------------
+                        {"arch": arch, "freeze_mode": freeze_mode, "epochs": history.best_epoch})
 
 def run_transformer(archs: list[str], freeze_modes: list[str], epochs: int, batch_size: int, fp16: bool):
     import time
@@ -262,22 +234,12 @@ def run_transformer(archs: list[str], freeze_modes: list[str], epochs: int, batc
                 return np.array(all_preds), np.vstack(all_probas)
 
             _evaluate_liar(predict_fn, test_df, name, history.train_time_sec,
-                           {"arch": arch, "hf_model": hf_name, "freeze_mode": freeze_mode,
+                        {"arch": arch, "hf_model": hf_name, "freeze_mode": freeze_mode,
                             "epochs": history.best_epoch, "fp16": fp16})
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
 
 def _concat(*dfs):
     import pandas as pd
     return pd.concat(list(dfs), ignore_index=True)
-
-
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(description="P9.1 — Train on LIAR 6-class benchmark")
@@ -285,8 +247,8 @@ def main():
                         choices=["classical", "deep_learning", "transformer"])
     parser.add_argument("--model", nargs="+", default=["all"],
                         choices=["lr", "svc", "rf", "xgb",
-                                 "bilstm", "textcnn",
-                                 "bert", "roberta", "all"])
+                                "bilstm", "textcnn",
+                                "bert", "roberta", "all"])
     parser.add_argument("--freeze", nargs="+", default=["finetuned"],
                         choices=["frozen", "finetuned", "both"])
     parser.add_argument("--epochs", type=int, default=None,

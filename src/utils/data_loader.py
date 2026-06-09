@@ -1,7 +1,3 @@
-# Load raw dataset (ISOT and WELFAKE), preprocess it for training (train test split: 80/20, with second split 50/50 for validation and test), and save the processed dataset to disk.
-# Preprocessing steps: apply clean_text to text column, apply input_text() to get unified ttext column, encode labels using label_map, drop exact duplicate "text" values
-# get_stats() fun to get class counts + %, text length stats (mean, median, p95, max), vocab size (unique tokens) and save to data/processed/<dataset_name>_stats.txt
-
 from .config import RAW_DATA_PATH, PROCESSED_DATA_PATH, DatasetConfig, SEED
 from .preprocessing import clean_text, input_text
 from .seeds import set_seed
@@ -9,12 +5,6 @@ import os
 import pandas as pd
 import sklearn
 from sklearn.model_selection import train_test_split
-
-# Define dataloader for ISOt, WLFAKE and LIAR datasets that loads the processed dataset from disk and returns train, val and test dataframes.
-# ISOT (merge true and fake csv, add label column)
-# WELFAKE (single file with coliumns: title, text, label (0 for fake, 1 for real))
-# LIAR (sepearate test, train and val files with columns: id, label, statement, subject, speaker, job_title, state_info, party_affiliation, barely_true_counts, false_counts, half_true_counts, mostly_true_counts, pants_on_fire_counts)
-
 class DatasetLoader:
     def __init__(self, config: DatasetConfig):
         self.config = config
@@ -49,7 +39,6 @@ def get_stats(df: pd.DataFrame, config: DatasetConfig):
 
 def load_and_preprocess_dataset(config: DatasetConfig):
     set_seed(SEED)
-    # Load raw dataset (ISOT has two files: true.csv and fake.csv, WELFAKE has one file: data.csv with label column (0 for fake, 1 for real))
     raw_dir = os.path.join(RAW_DATA_PATH, config.name)
     if config.name == "isot":
         df_true = pd.read_csv(os.path.join(raw_dir, "True.csv"))
@@ -89,19 +78,15 @@ def load_splits(config: DatasetConfig):
         from .combined_loader import load_combined_splits
         return load_combined_splits()
     if config.name.startswith("nela"):
-        # NELA must be preprocessed explicitly via src.nela.dataset --preprocess
         processed_dir = os.path.join(PROCESSED_DATA_PATH, config.name)
         if not (os.path.exists(os.path.join(processed_dir, "train.csv")) and
                 os.path.exists(os.path.join(processed_dir, "val.csv")) and
                 os.path.exists(os.path.join(processed_dir, "test.csv"))):
             raise FileNotFoundError(
                 f"NELA processed splits not found at {processed_dir}. "
-                f"Run: python -m src.nela.dataset --preprocess "
-                f"[--sample 100000 --output-suffix sampled_100k]"
             )
         print(f"Processed dataset for {config.name} already exists. Loading from disk.")
         return data_loader(config)
-    # load existing CSVs; skip reprocessing if they already exist
     processed_dir = os.path.join(PROCESSED_DATA_PATH, config.name)
     if os.path.exists(os.path.join(processed_dir, "train.csv")) and \
        os.path.exists(os.path.join(processed_dir, "val.csv")) and \

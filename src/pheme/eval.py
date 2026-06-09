@@ -1,20 +1,3 @@
-"""
-PHEME OOD evaluation runner.
-
-Loads saved best checkpoints from each tier and evaluates on PHEME test split.
-Results are saved to results/runs/ with split="ood_pheme" and picked up by
-the results aggregator automatically.
-
-Usage:
-  # Download + preprocess first (once):
-  python -m src.pheme.dataset --download --preprocess
-
-  # Then evaluate all tiers:
-  python -m src.pheme.eval --tier all
-  python -m src.pheme.eval --tier classical
-  python -m src.pheme.eval --tier deep_learning
-  python -m src.pheme.eval --tier transformer
-"""
 import argparse
 import os
 from pathlib import Path
@@ -29,11 +12,6 @@ from ..utils.metrics import evaluate
 from .dataset import load_pheme_splits
 
 GLOVE_PATH = Path(__file__).resolve().parents[2] / "data" / "raw" / "glove" / "glove.840B.300d.txt"
-
-
-# ---------------------------------------------------------------------------
-# Classical
-# ---------------------------------------------------------------------------
 
 def _eval_classical(test_df, models: list[str], train_dataset: str):
     from ..classical.features import TFIDFFeaturizer
@@ -69,12 +47,7 @@ def _eval_classical(test_df, models: list[str], train_dataset: str):
             split="ood_pheme",
         )
         print(f"    macro_f1={bundle.macro_f1:.4f}  acc={bundle.accuracy:.4f}  "
-              f"auc={bundle.roc_auc:.4f}")
-
-
-# ---------------------------------------------------------------------------
-# Deep Learning
-# ---------------------------------------------------------------------------
+            f"auc={bundle.roc_auc:.4f}")
 
 def _eval_deep_learning(test_df, variants: list[str], train_dataset: str):
     from ..deep_learning.dataset import TextDataset, VocabBuilder
@@ -125,12 +98,7 @@ def _eval_deep_learning(test_df, variants: list[str], train_dataset: str):
             split="ood_pheme",
         )
         print(f"    macro_f1={bundle.macro_f1:.4f}  acc={bundle.accuracy:.4f}  "
-              f"auc={bundle.roc_auc:.4f}")
-
-
-# ---------------------------------------------------------------------------
-# Transformer
-# ---------------------------------------------------------------------------
+            f"auc={bundle.roc_auc:.4f}")
 
 def _eval_transformer(test_df, variants: list[str], train_dataset: str):
     from transformers import AutoTokenizer
@@ -185,12 +153,7 @@ def _eval_transformer(test_df, variants: list[str], train_dataset: str):
             split="ood_pheme",
         )
         print(f"    macro_f1={bundle.macro_f1:.4f}  acc={bundle.accuracy:.4f}  "
-              f"auc={bundle.roc_auc:.4f}")
-
-
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
+            f"auc={bundle.roc_auc:.4f}")
 
 _CLASSICAL_MODELS   = ["lr", "svc", "rf", "xgb"]
 _DL_VARIANTS        = ["bilstm_frozen", "bilstm_finetuned", "textcnn_frozen", "textcnn_finetuned"]
@@ -209,13 +172,11 @@ def main():
     args = parser.parse_args()
 
     print("\n=== PHEME OOD Evaluation ===")
-    print("NOTE: Expect lower scores — PHEME is tweet-length (~20 words) vs. "
-          "article-length training data.\n")
 
     _, _, test_df = load_pheme_splits()
     test_df["text"] = test_df["text"].fillna("").astype(str)
     print(f"PHEME test: {len(test_df)} rows  "
-          f"(false={( test_df['label']==0).sum()}  true={(test_df['label']==1).sum()})\n")
+        f"(false={( test_df['label']==0).sum()}  true={(test_df['label']==1).sum()})\n")
 
     run_classical    = args.tier in ("all", "classical")
     run_dl           = args.tier in ("all", "deep_learning")
@@ -235,10 +196,6 @@ def main():
         variants = _TRANSFORMER_VARIANTS if "all" in args.model else args.model
         print(f"\n-- Transformer ({args.train_dataset}) --")
         _eval_transformer(test_df, variants, args.train_dataset)
-
-    print("\nDone. Results saved to results/runs/ (split=ood_pheme).")
-    print("Run: python -m src.utils.results_aggregator --all  to update results_table.md")
-
 
 if __name__ == "__main__":
     main()

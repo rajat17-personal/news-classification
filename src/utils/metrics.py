@@ -1,16 +1,3 @@
-# evaluate(predict_fn, test_df, model_name, dataset_name, train_time_sec, hyperparams, split="test") -> MetricsBundle:
-
-# Call predict_fn(test_df["text"].tolist()) → y_pred: np.ndarray
-# Time a second CPU-only pass for latency (batch_size=1, 100-sample subset, report ms/sample)
-# Compute: accuracy, macro_f1, weighted_f1, per-class P/R/F1, ROC-AUC, confusion matrix
-# Build MetricsBundle
-# Write JSON to RESULTS_RUNS / f"{model_name}_{dataset_name}_{split}_{timestamp}.json"
-# Return bundle
-# predict_fn contract:
-
-# Input: list[str] of raw texts
-# Output: np.ndarray of integer class predictions (shape [N])
-# For AUC: the function may also return probas if the caller wraps predict_proba
 import json
 import os
 import time

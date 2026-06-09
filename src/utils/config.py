@@ -11,7 +11,6 @@ CHECKPOINTS_PATH    = str(PROJECT_ROOT / "checkpoints")
 RESULTS_PATH        = str(PROJECT_ROOT / "results")
 LOGS_PATH           = str(PROJECT_ROOT / "logs")
 
-#Ready Dataset config for ISOT, WELFAKE and LIAR to pass to train.py
 @dataclass
 class DatasetConfig:
     name: str
@@ -37,23 +36,6 @@ LIAR_CONFIG = DatasetConfig(
     name="liar",
     label_map={"Fake": 0, "Real": 1},
     binary=True,
-)
-
-# NELA-GT (misinfo-general) — 3-class task:
-#   0 = Reliable        (Left, Left-Center, Least Biased, Right-Center, Right, Pro-Science)
-#   1 = Questionable    (Questionable Source)
-#   2 = Conspiracy      (Conspiracy-Pseudoscience)
-# label_map is identity here; the actual MBFC→int mapping lives in src/nela/dataset.py.
-NELA_CONFIG = DatasetConfig(
-    name="nela",
-    label_map={0: 0, 1: 1, 2: 2},
-    binary=False,
-)
-
-NELA_SAMPLED_CONFIG = DatasetConfig(
-    name="nela_sampled_100k",
-    label_map={0: 0, 1: 1, 2: 2},
-    binary=False,
 )
 
 NELA_DL_CONFIG = DatasetConfig(

@@ -35,10 +35,8 @@ class TransformerTrainerConfig:
         if self.save_dir is None:
             self.save_dir = Path(CHECKPOINTS_PATH) / "transformers_" / self.dataset_name
         os.makedirs(self.save_dir, exist_ok=True)
-        # fp16 only makes sense on CUDA
         if self.device == "cpu":
             self.fp16 = False
-
 
 @dataclass
 class TransformerTrainingHistory:
@@ -90,9 +88,9 @@ class TransformerTrainer:
 
         for epoch in range(1, cfg.num_epochs + 1):
             tr_loss, tr_f1 = self._run_epoch(model, train_loader, criterion, optimizer,
-                                              scheduler, scaler, train=True)
+                                            scheduler, scaler, train=True)
             vl_loss, vl_f1 = self._run_epoch(model, val_loader, criterion, None,
-                                              None, None, train=False)
+                                            None, None, train=False)
 
             history.train_loss.append(tr_loss)
             history.val_loss.append(vl_loss)
@@ -100,8 +98,8 @@ class TransformerTrainer:
             history.val_f1.append(vl_f1)
 
             print(f"  Epoch {epoch:02d}/{cfg.num_epochs} — "
-                  f"train loss={tr_loss:.4f} f1={tr_f1:.4f} | "
-                  f"val loss={vl_loss:.4f} f1={vl_f1:.4f}", flush=True)
+                f"train loss={tr_loss:.4f} f1={tr_f1:.4f} | "
+                f"val loss={vl_loss:.4f} f1={vl_f1:.4f}", flush=True)
 
             if vl_f1 > best_val_f1:
                 best_val_f1 = vl_f1
@@ -116,7 +114,7 @@ class TransformerTrainer:
 
         history.train_time_sec = time.perf_counter() - t0
         print(f"  Best epoch: {history.best_epoch}  val_f1={best_val_f1:.4f}  "
-              f"time={history.train_time_sec:.1f}s")
+            f"time={history.train_time_sec:.1f}s")
         return history
 
     def _run_epoch(self, model, loader, criterion, optimizer, scheduler, scaler, train: bool):

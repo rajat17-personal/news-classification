@@ -1,15 +1,3 @@
-"""
-LIAR 6-class with metadata features — classical tier only.
-
-Adds structured metadata (credit history, party, subject, context) on top of
-TF-IDF text features. Only classical models are supported since DL/transformer
-architectures require homogeneous tensor inputs; the metadata ablation is most
-informative for classical models where the feature space is interpretable.
-
-Usage:
-  python -m src.liar.train_meta --model all
-  python -m src.liar.train_meta --model lr xgb
-"""
 import argparse
 import os
 import time
@@ -35,9 +23,7 @@ def run_classical_meta(model_keys: list[str]):
     raw_val   = LIARMetaFeaturizer.load_raw_tsv("val")
     raw_test  = LIARMetaFeaturizer.load_raw_tsv("test")
 
-    # Filter to rows that survived preprocessing (same index alignment via statement text)
     # The processed CSV has cleaned text; align on statement position using label
-    # Since _load_tsv applies clean_text, we re-derive labels from raw and match
     from .dataset import LIAR_LABELS
     raw_train = raw_train[raw_train["label"].isin(LIAR_LABELS)].reset_index(drop=True)
     raw_val   = raw_val[raw_val["label"].isin(LIAR_LABELS)].reset_index(drop=True)
@@ -56,13 +42,12 @@ def run_classical_meta(model_keys: list[str]):
     featurizer.save("liar_meta")
     n_text = len(featurizer.tfidf.vectorizer.vocabulary_)
     print(f"Feature matrix: {X_fit.shape}  "
-          f"(text={n_text} + meta={X_fit.shape[1] - n_text})")
+        f"(text={n_text} + meta={X_fit.shape[1] - n_text})")
 
     for model_key in model_keys:
         print(f"\n=== {model_key.upper()} on LIAR (6-class + metadata) ===")
         cls = MODEL_REGISTRY[model_key]
         model = cls()
-        # LIAR+meta has more features than binary tasks — SVC needs more iterations
         if model_key == "svc":
             from sklearn.svm import LinearSVC
             from sklearn.calibration import CalibratedClassifierCV
@@ -86,7 +71,7 @@ def run_classical_meta(model_keys: list[str]):
             model_name=f"{model_key}_liar_meta",
             train_time_sec=train_time,
             hyperparams={"model": model_key, "features": "tfidf+metadata",
-                         "text_max_features": 30000, "ngram_range": "(1,2)"},
+                        "text_max_features": 30000, "ngram_range": "(1,2)"},
         )
 
 

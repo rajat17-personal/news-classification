@@ -76,7 +76,6 @@ def run(dataset_name: str, model_keys: list, tune: str):
         y_train = train_df['label'].values
 
         # For RF on large datasets (>200k rows): reduce trees and subsample
-        # to stay within RAM. max_features='sqrt' is already set in RFModel.
         if model_key == 'rf' and len(train_df) > 200_000:
             model = MODEL_REGISTRY[model_key](n_estimators=50, max_samples=0.5)
             print(f"  Large dataset detected — RF: n_estimators=50, max_samples=0.5")
@@ -98,8 +97,6 @@ def run(dataset_name: str, model_keys: list, tune: str):
         os.makedirs(ckpt_dir, exist_ok=True)
         model.save(os.path.join(ckpt_dir, f"{model_key}.joblib"))
 
-        # full parameter record for JSON: tfidf settings + all model params
-        # SVCModel wraps CalibratedClassifierCV — pull inner LinearSVC params to stay serializable
         raw_params = (
             {**model.model.get_params(deep=False),
              **{f"estimator__{k}": v for k, v in model.model.estimator.get_params().items()}}
@@ -114,7 +111,6 @@ def run(dataset_name: str, model_keys: list, tune: str):
             **{k: v for k, v in raw_params.items() if k != 'estimator'},
             **tuned_params,
         }
-        # only the keys that were actually searched — shown in MD summary
         display_params = tuned_params if tuned_params else {"tuning": "default"}
 
         def predict_fn(texts: list, _model=model, _feat=featurizer):
